@@ -1,0 +1,179 @@
+﻿@page "/Users"
+@using Syncfusion.Blazor
+@using Syncfusion.Blazor.Grids
+
+<h3>Users</h3>
+<div style="max-width:900px">
+    <SfGrid DataSource="@usersData"> 
+        <GridColumns>
+            <GridColumn Field="@nameof(UsersModel.Id)"></GridColumn>
+            <GridColumn Field="@nameof(UsersModel.FirstName)"></GridColumn>
+            <GridColumn Field="@nameof(UsersModel.LastName)"></GridColumn>
+            <GridColumn Field="@nameof(UsersModel.Technologies)"></GridColumn>
+            <GridColumn Field="@nameof(UsersModel.ProgrammingLanguages)"></GridColumn>
+        </GridColumns>
+    </SfGrid>
+</div>
+@code {
+    //User Browsing: The system enables browsing all users based on technologies and programming languages. 
+    //test
+
+    private List<UsersModel>? usersData = null;
+
+    protected override void OnInitialized()
+    {
+        //SM
+        UsersModel us1 = new UsersModel
+            {
+                Id = 1,
+                FirstName = "Bob",
+                LastName = "Jones",
+                Technologies = "React Native, MongoDB, SwiftUI, .NET Maui, Wrapping Up, AWS, VueJS, Angular",
+                ProgrammingLanguages = "C#, Java, JavaScript, Ruby, pascal, c++, python, php, SQL",
+                ReportToEmpId = null
+
+            };
+        //TL
+        UsersModel us2 = new UsersModel
+            {
+                Id = 2,
+                FirstName = "Jenny",
+                LastName = "Marks",
+                Technologies = "React Native, MongoDB, SwiftUI, .NET Maui, Wrapping Up, AWS, VueJS, Angular",
+                ProgrammingLanguages = "C#, Java, JavaScript, Ruby, pascal, c++, python, php, SQL",
+                ReportToEmpId = 1
+
+            };
+        UsersModel us3 = new UsersModel
+            {
+                Id = 3,
+                FirstName = "Henry",
+                LastName = "Andrews",
+                Technologies = "React Native, MongoDB, SwiftUI, .NET Maui, Wrapping Up, AWS, VueJS, Angular",
+                ProgrammingLanguages = "C#, Java, JavaScript, Ruby, pascal, c++, python, php, SQL",
+                ReportToEmpId = 1
+
+            };
+        UsersModel us4 = new UsersModel
+            {
+                Id = 4,
+                FirstName = "John",
+                LastName = "Jameson",
+                Technologies = "React Native, MongoDB, SwiftUI, .NET Maui, Wrapping Up, AWS, VueJS, Angular",
+                ProgrammingLanguages = "C#, Java, JavaScript, Ruby, pascal, c++, python, php, SQL",
+                ReportToEmpId = 1
+
+            };
+
+        //SR
+        //Team - Jenny Marks
+        UsersModel us5 = new UsersModel
+            {
+                Id = 5,
+                FirstName = "Noah",
+                LastName = "Fitch",
+                Technologies = "React Native, MongoDB, SwiftUI, .NET Maui, Wrapping Up, AWS, VueJS, Angular",
+                ProgrammingLanguages = "C#, Java, JavaScript, Ruby, pascal, c++, python, php, SQL",
+                ReportToEmpId = 2
+
+            };
+        UsersModel us6 = new UsersModel
+            {
+                Id = 6,
+                FirstName = "Elijah",
+                LastName = "Hamilton",
+                Technologies = "React Native, MongoDB, SwiftUI, .NET Maui, Wrapping Up, AWS, VueJS, Angular",
+                ProgrammingLanguages = "C#, Java, JavaScript, Ruby, pascal, c++, python, php, SQL",
+                ReportToEmpId = 2
+
+            };
+        UsersModel us7 = new UsersModel
+            {
+                Id = 7,
+                FirstName = "Jamie",
+                LastName = "Fisher",
+                Technologies = "React Native, MongoDB, SwiftUI, .NET Maui, Wrapping Up, AWS, VueJS, Angular",
+                ProgrammingLanguages = "C#, Java, JavaScript, Ruby, pascal, c++, python, php, SQL",
+                ReportToEmpId = 2
+
+            };
+        //SR
+        //Team - Henry Andrews
+        UsersModel us8 = new UsersModel
+            {
+                Id = 8,
+                FirstName = "Olivia",
+                LastName = "Mills",
+                Technologies = "React Native, MongoDB, SwiftUI, .NET Maui, Wrapping Up, AWS, VueJS, Angular",
+                ProgrammingLanguages = "C#, Java, JavaScript, Ruby, pascal, c++, python, php, SQL",
+                ReportToEmpId = 3
+
+            };
+        UsersModel us9 = new UsersModel
+            {
+                Id = 9,
+                FirstName = "Benjamin",
+                LastName = "Lucas",
+                Technologies = "React Native, MongoDB, SwiftUI, .NET Maui, Wrapping Up, AWS, VueJS, Angular",
+                ProgrammingLanguages = "C#, Java, JavaScript, Ruby, pascal, c++, python, php, SQL",
+                ReportToEmpId = 3
+
+            };
+
+        UsersModel us10 = new UsersModel
+            {
+                Id = 10,
+                FirstName = "Sarah",
+                LastName = "Henderson",
+                Technologies = "React Native, MongoDB, SwiftUI, .NET Maui, Wrapping Up, AWS, VueJS, Angular",
+                ProgrammingLanguages = "C#, Java, JavaScript, Ruby, pascal, c++, python, php, SQL",
+                ReportToEmpId = 3
+
+            };
+        //SR
+        //John Jameson
+        UsersModel us11 = new UsersModel
+            {
+                Id = 11,
+                FirstName = "Emma",
+                LastName = "Lee",
+                Technologies = "React Native, MongoDB, SwiftUI, .NET Maui, Wrapping Up, AWS, VueJS, Angular",
+                ProgrammingLanguages = "C#, Java, JavaScript, Ruby, pascal, c++, python, php, SQL",
+                ReportToEmpId = 4
+
+            };
+        UsersModel us12 = new UsersModel
+            {
+                Id = 12,
+                FirstName = "Ava",
+                LastName = "Williams",
+                Technologies = "React Native, MongoDB, SwiftUI, .NET Maui, Wrapping Up, AWS, VueJS, Angular",
+                ProgrammingLanguages = "C#, Java, JavaScript, Ruby, pascal, c++, python, php, SQL",
+                ReportToEmpId = 4
+
+            };
+        UsersModel us13 = new UsersModel
+            {
+                Id = 13,
+                FirstName = "Angela",
+                LastName = "Moore",
+                Technologies = "React Native, MongoDB, SwiftUI, .NET Maui, Wrapping Up, AWS, VueJS, Angular",
+                ProgrammingLanguages = "C#, Java, JavaScript, Ruby, pascal, c++, python, php, SQL",
+                ReportToEmpId = 4
+            };
+
+
+        usersData = new List<UsersModel> { us1, us2, us3, us4, us5, us6, us7, us8, us9, us10, us11, us12, us13 };
+
+    }
+    public class UsersModel
+    {
+        public int Id { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Technologies { get; set; } 
+        public string ProgrammingLanguages { get; set; }
+        public int? ReportToEmpId { get; set; }
+    }
+
+}
