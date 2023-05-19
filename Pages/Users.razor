@@ -4,22 +4,25 @@
 
 <h3>Users</h3>
 <div style="max-width:900px">
-    <SfGrid DataSource="@usersData"> 
+    <SfGrid DataSource="@usersData" AllowSorting = "true" AllowFiltering = "true" AllowPaging = "true" AllowGrouping ="true" Toolbar="@toolbar"> <!--functionality: padding, search, flter, sorting-->
+        <GridEditSettings AllowAdding = "true" AllowEditing = "true" AllowDeleting></GridEditSettings><!--add, edit, delete-->
+        <GridPageSettings PageSize="10"></GridPageSettings>
+        <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Menu"></GridFilterSettings><!--filter each column-->
         <GridColumns>
-            <GridColumn Field="@nameof(UsersModel.Id)"></GridColumn>
-            <GridColumn Field="@nameof(UsersModel.FirstName)"></GridColumn>
-            <GridColumn Field="@nameof(UsersModel.LastName)"></GridColumn>
+            <GridColumn IsPrimaryKey = "true" Field="@nameof(UsersModel.Id)" Width="50px"></GridColumn>
+            <GridColumn HeaderText="First name" Field="@nameof(UsersModel.FirstName)"></GridColumn>
+            <GridColumn HeaderText="Last name" Field="@nameof(UsersModel.LastName)"></GridColumn>
             <GridColumn Field="@nameof(UsersModel.Technologies)"></GridColumn>
-            <GridColumn Field="@nameof(UsersModel.ProgrammingLanguages)"></GridColumn>
+            <GridColumn HeaderText="Programming Languages" Field="@nameof(UsersModel.ProgrammingLanguages)"></GridColumn>
         </GridColumns>
     </SfGrid>
 </div>
 @code {
     //User Browsing: The system enables browsing all users based on technologies and programming languages. 
-    //test
+    //test (crud operations)
 
     private List<UsersModel>? usersData = null;
-
+    private List<object> toolbar = new List<object> {"Add","Edit","Delete","Update","Cancel","Search" }; 
     protected override void OnInitialized()
     {
         //SM
@@ -28,8 +31,8 @@
                 Id = 1,
                 FirstName = "Bob",
                 LastName = "Jones",
-                Technologies = "React Native, MongoDB, SwiftUI, .NET Maui, Wrapping Up, AWS, VueJS, Angular",
-                ProgrammingLanguages = "C#, Java, JavaScript, Ruby, pascal, c++, python, php, SQL",
+                Technologies = "React Native, MongoDB, Angular",
+                ProgrammingLanguages = "JavaScript, python",
                 ReportToEmpId = null
 
             };
@@ -39,8 +42,8 @@
                 Id = 2,
                 FirstName = "Jenny",
                 LastName = "Marks",
-                Technologies = "React Native, MongoDB, SwiftUI, .NET Maui, Wrapping Up, AWS, VueJS, Angular",
-                ProgrammingLanguages = "C#, Java, JavaScript, Ruby, pascal, c++, python, php, SQL",
+                Technologies = "MongoDB, SwiftUI, VueJS",
+                ProgrammingLanguages = "Java, JavaScript",
                 ReportToEmpId = 1
 
             };
@@ -49,8 +52,8 @@
                 Id = 3,
                 FirstName = "Henry",
                 LastName = "Andrews",
-                Technologies = "React Native, MongoDB, SwiftUI, .NET Maui, Wrapping Up, AWS, VueJS, Angular",
-                ProgrammingLanguages = "C#, Java, JavaScript, Ruby, pascal, c++, python, php, SQL",
+                Technologies = "MongoDB, SwiftUI, .NET Maui",
+                ProgrammingLanguages = "C#, Java, SQL",
                 ReportToEmpId = 1
 
             };
@@ -59,8 +62,8 @@
                 Id = 4,
                 FirstName = "John",
                 LastName = "Jameson",
-                Technologies = "React Native, MongoDB, SwiftUI, .NET Maui, Wrapping Up, AWS, VueJS, Angular",
-                ProgrammingLanguages = "C#, Java, JavaScript, Ruby, pascal, c++, python, php, SQL",
+                Technologies = "React Native, MongoDB, Wrapping Up, VueJS, Angular",
+                ProgrammingLanguages = "JavaScript, c++, php",
                 ReportToEmpId = 1
 
             };
@@ -72,8 +75,8 @@
                 Id = 5,
                 FirstName = "Noah",
                 LastName = "Fitch",
-                Technologies = "React Native, MongoDB, SwiftUI, .NET Maui, Wrapping Up, AWS, VueJS, Angular",
-                ProgrammingLanguages = "C#, Java, JavaScript, Ruby, pascal, c++, python, php, SQL",
+                Technologies = "SwiftUI, .NET Maui, AWS",
+                ProgrammingLanguages = "C#, Java, JavaScript",
                 ReportToEmpId = 2
 
             };
@@ -82,8 +85,8 @@
                 Id = 6,
                 FirstName = "Elijah",
                 LastName = "Hamilton",
-                Technologies = "React Native, MongoDB, SwiftUI, .NET Maui, Wrapping Up, AWS, VueJS, Angular",
-                ProgrammingLanguages = "C#, Java, JavaScript, Ruby, pascal, c++, python, php, SQL",
+                Technologies = "React Native, VueJS, Angular",
+                ProgrammingLanguages = "JavaScript, python,",
                 ReportToEmpId = 2
 
             };
@@ -92,8 +95,8 @@
                 Id = 7,
                 FirstName = "Jamie",
                 LastName = "Fisher",
-                Technologies = "React Native, MongoDB, SwiftUI, .NET Maui, Wrapping Up, AWS, VueJS, Angular",
-                ProgrammingLanguages = "C#, Java, JavaScript, Ruby, pascal, c++, python, php, SQL",
+                Technologies = "SwiftUI, .NET Maui, Angular",
+                ProgrammingLanguages = "C#, Java, JavaScript",
                 ReportToEmpId = 2
 
             };
@@ -104,8 +107,8 @@
                 Id = 8,
                 FirstName = "Olivia",
                 LastName = "Mills",
-                Technologies = "React Native, MongoDB, SwiftUI, .NET Maui, Wrapping Up, AWS, VueJS, Angular",
-                ProgrammingLanguages = "C#, Java, JavaScript, Ruby, pascal, c++, python, php, SQL",
+                Technologies = ".NET Maui, Wrapping Up, AWS, Angular",
+                ProgrammingLanguages = "C#, Java, JavaScript, SQL",
                 ReportToEmpId = 3
 
             };
@@ -114,8 +117,8 @@
                 Id = 9,
                 FirstName = "Benjamin",
                 LastName = "Lucas",
-                Technologies = "React Native, MongoDB, SwiftUI, .NET Maui, Wrapping Up, AWS, VueJS, Angular",
-                ProgrammingLanguages = "C#, Java, JavaScript, Ruby, pascal, c++, python, php, SQL",
+                Technologies = "Wrapping Up, AWS, VueJS, Angular",
+                ProgrammingLanguages = "JavaScript, Ruby, pascal, c++",
                 ReportToEmpId = 3
 
             };
@@ -125,8 +128,8 @@
                 Id = 10,
                 FirstName = "Sarah",
                 LastName = "Henderson",
-                Technologies = "React Native, MongoDB, SwiftUI, .NET Maui, Wrapping Up, AWS, VueJS, Angular",
-                ProgrammingLanguages = "C#, Java, JavaScript, Ruby, pascal, c++, python, php, SQL",
+                Technologies = "MongoDB, SwiftUI, .NET Maui, AWS",
+                ProgrammingLanguages = "C#, python, php, SQL",
                 ReportToEmpId = 3
 
             };
@@ -137,8 +140,8 @@
                 Id = 11,
                 FirstName = "Emma",
                 LastName = "Lee",
-                Technologies = "React Native, MongoDB, SwiftUI, .NET Maui, Wrapping Up, AWS, VueJS, Angular",
-                ProgrammingLanguages = "C#, Java, JavaScript, Ruby, pascal, c++, python, php, SQL",
+                Technologies = "React Native, VueJS, Angular",
+                ProgrammingLanguages = "C#, Java, JavaScript, SQL",
                 ReportToEmpId = 4
 
             };
@@ -147,8 +150,8 @@
                 Id = 12,
                 FirstName = "Ava",
                 LastName = "Williams",
-                Technologies = "React Native, MongoDB, SwiftUI, .NET Maui, Wrapping Up, AWS, VueJS, Angular",
-                ProgrammingLanguages = "C#, Java, JavaScript, Ruby, pascal, c++, python, php, SQL",
+                Technologies = "React Native, MongoDB, VueJS, Angular",
+                ProgrammingLanguages = "C#, Java, JavaScript, Ruby",
                 ReportToEmpId = 4
 
             };
@@ -157,8 +160,8 @@
                 Id = 13,
                 FirstName = "Angela",
                 LastName = "Moore",
-                Technologies = "React Native, MongoDB, SwiftUI, .NET Maui, Wrapping Up, AWS, VueJS, Angular",
-                ProgrammingLanguages = "C#, Java, JavaScript, Ruby, pascal, c++, python, php, SQL",
+                Technologies = "React Native, MongoDB",
+                ProgrammingLanguages = "C#, Java, python, php, SQL",
                 ReportToEmpId = 4
             };
 
