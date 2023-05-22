@@ -1,9 +1,18 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.EntityFrameworkCore;
 using StudentManagmentApp.Data;
+using StudentManagmentApp.Services;
+using StudentManagmentApp.Services.Contracts;
 using Syncfusion.Blazor;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var connectionString = builder.Configuration.GetConnectionString("StudentManagmentDbConnection")
+    ?? throw new InvalidOperationException("Connection 'StudentManagmentDbConnection' not found");
+
+builder.Services.AddDbContext<StudentManagmentDbContext>(
+    options => options.UseSqlServer(connectionString));
 
 // Add services to the container.
 builder.Services.AddRazorPages();
@@ -11,6 +20,8 @@ builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
 
 builder.Services.AddSyncfusionBlazor(); //UI components library for creating Blazor WebAssembly and Server applications
+
+builder.Services.AddScoped<IUsersManagmentService, UsersManagmentService>();
 
 var app = builder.Build();
 

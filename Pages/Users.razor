@@ -1,182 +1,154 @@
 ﻿@page "/Users"
+@using StudentManagmentApp.Models;
+@using StudentManagmentApp.Services.Contracts;
 @using Syncfusion.Blazor
+@using Syncfusion.Blazor.Buttons
 @using Syncfusion.Blazor.Grids
 
+@inject IUsersManagmentService UsersManagmentService
+
 <h3>Users</h3>
-<div style="max-width:900px">
-    <SfGrid DataSource="@usersData" AllowSorting = "true" AllowFiltering = "true" AllowPaging = "true" AllowGrouping ="true" Toolbar="@toolbar"> <!--functionality: padding, search, flter, sorting-->
-        <GridEditSettings AllowAdding = "true" AllowEditing = "true" AllowDeleting></GridEditSettings><!--add, edit, delete-->
+<div style="max-width:1100px">
+    <SfGrid @ref="SfUsersGrid" DataSource="@usersData" 
+        AllowPdfExport = "true" AllowExcelExport = "true" AllowSorting = "true" AllowPaging = "true" AllowGrouping = "true" AllowFiltering = "true" Toolbar="@toolbar">
+        <GridEditSettings Mode = "EditMode.Dialog" AllowAdding = "true" AllowEditing = "true" AllowDeleting = "true">
+            <HeaderTemplate>
+                <span>@(GetDialogHeaderText(context as UsersModel))</span>
+            </HeaderTemplate>
+            <FooterTemplate>
+                <SfButton OnClick="@Save" IsPrimary ="true">@DialogButtonCaption</SfButton>
+                <SfButton OnClick="@Cancel">Cancel</SfButton>
+            </FooterTemplate>
+        </GridEditSettings>
         <GridPageSettings PageSize="10"></GridPageSettings>
-        <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Menu"></GridFilterSettings><!--filter each column-->
+        <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Menu"></GridFilterSettings>
+        <GridEvents OnToolbarClick="ToolbarBtnClickHandler" OnActionBegin="ActionBeginHandler" OnActionComplete="ActionCompleteHandler" TValue="UsersModel"></GridEvents>
         <GridColumns>
-            <GridColumn IsPrimaryKey = "true" Field="@nameof(UsersModel.Id)" Width="50px"></GridColumn>
-            <GridColumn HeaderText="First name" Field="@nameof(UsersModel.FirstName)"></GridColumn>
-            <GridColumn HeaderText="Last name" Field="@nameof(UsersModel.LastName)"></GridColumn>
-            <GridColumn Field="@nameof(UsersModel.Technologies)"></GridColumn>
+            <GridColumn AllowAdding = "false" IsPrimaryKey = "true" Field="@nameof(UsersModel.Id)" Width="50px"></GridColumn>
+            <GridColumn HeaderText="First name" Field="@nameof(UsersModel.FirstName)" Width="120px"></GridColumn>
+            <GridColumn HeaderText="Last name" Field="@nameof(UsersModel.LastName)" Width="120px"></GridColumn>
+            <GridColumn HeaderText="Email" Field="@nameof(UsersModel.Email)" Width="170px"></GridColumn>
+            <GridColumn Field="@nameof(UsersModel.Technologies)" Width="170px"></GridColumn>
             <GridColumn HeaderText="Programming Languages" Field="@nameof(UsersModel.ProgrammingLanguages)"></GridColumn>
+            <GridColumn HeaderText="Skills rating" Field="@nameof(UsersModel.SkillsRating)" Width="110px"></GridColumn>
+
+        <GridColumn HeaderText="" Width="110px">
+            <GridCommandColumns>
+                <GridCommandColumn Type= "CommandButtonType.Edit" ButtonOption="@(new CommandButtonOptions(){
+                                                        IconCss = "e-icons e-edit",
+                                                        CssClass = "e-flat"
+                                                    })">
+
+                </GridCommandColumn>
+                <GridCommandColumn Type="CommandButtonType.Delete" ButtonOption="@(new CommandButtonOptions(){
+                                                        IconCss = "e-icons e-delete",
+                                                        CssClass = "e-flat"
+                                                    })">
+
+                </GridCommandColumn>
+                <GridCommandColumn Type="CommandButtonType.Save" ButtonOption="@(new CommandButtonOptions(){
+                                                        IconCss = "e-icons e-update",
+                                                        CssClass = "e-flat"
+                                                    })">
+
+                </GridCommandColumn>
+                <GridCommandColumn Type="CommandButtonType.Cancel" ButtonOption="@(new CommandButtonOptions(){
+                                                        IconCss = "e-icons e-cancel-icon",
+                                                        CssClass = "e-flat"
+                                                    })">
+
+                </GridCommandColumn>
+            </GridCommandColumns>
+        </GridColumn>
         </GridColumns>
+        <!--<SfSpinner @bind-Visible="@VisibleProp"></SfSpinner>-->
     </SfGrid>
 </div>
 @code {
     //User Browsing: The system enables browsing all users based on technologies and programming languages. 
     //test (crud operations)
 
+    private string DialogButtonCaption { get; set; }
+
+    private SfGrid<UsersModel>? SfUsersGrid { get; set; }
+
+    //
+    //private bool VisibleProp{ get; set; } = false;
+
     private List<UsersModel>? usersData = null;
-    private List<object> toolbar = new List<object> {"Add","Edit","Delete","Update","Cancel","Search" }; 
-    protected override void OnInitialized()
+    private List<object> toolbar = new List<object> {"Add","Search","ExcelExport","PdfExport"}; 
+
+    protected override async Task OnInitializedAsync()
     {
-        //SM
-        UsersModel us1 = new UsersModel
-            {
-                Id = 1,
-                FirstName = "Bob",
-                LastName = "Jones",
-                Technologies = "React Native, MongoDB, Angular",
-                ProgrammingLanguages = "JavaScript, python",
-                ReportToEmpId = null
+        //VisibleProp = true;
 
-            };
-        //TL
-        UsersModel us2 = new UsersModel
-            {
-                Id = 2,
-                FirstName = "Jenny",
-                LastName = "Marks",
-                Technologies = "MongoDB, SwiftUI, VueJS",
-                ProgrammingLanguages = "Java, JavaScript",
-                ReportToEmpId = 1
+        usersData = await UsersManagmentService.GetUsers();
 
-            };
-        UsersModel us3 = new UsersModel
-            {
-                Id = 3,
-                FirstName = "Henry",
-                LastName = "Andrews",
-                Technologies = "MongoDB, SwiftUI, .NET Maui",
-                ProgrammingLanguages = "C#, Java, SQL",
-                ReportToEmpId = 1
-
-            };
-        UsersModel us4 = new UsersModel
-            {
-                Id = 4,
-                FirstName = "John",
-                LastName = "Jameson",
-                Technologies = "React Native, MongoDB, Wrapping Up, VueJS, Angular",
-                ProgrammingLanguages = "JavaScript, c++, php",
-                ReportToEmpId = 1
-
-            };
-
-        //SR
-        //Team - Jenny Marks
-        UsersModel us5 = new UsersModel
-            {
-                Id = 5,
-                FirstName = "Noah",
-                LastName = "Fitch",
-                Technologies = "SwiftUI, .NET Maui, AWS",
-                ProgrammingLanguages = "C#, Java, JavaScript",
-                ReportToEmpId = 2
-
-            };
-        UsersModel us6 = new UsersModel
-            {
-                Id = 6,
-                FirstName = "Elijah",
-                LastName = "Hamilton",
-                Technologies = "React Native, VueJS, Angular",
-                ProgrammingLanguages = "JavaScript, python,",
-                ReportToEmpId = 2
-
-            };
-        UsersModel us7 = new UsersModel
-            {
-                Id = 7,
-                FirstName = "Jamie",
-                LastName = "Fisher",
-                Technologies = "SwiftUI, .NET Maui, Angular",
-                ProgrammingLanguages = "C#, Java, JavaScript",
-                ReportToEmpId = 2
-
-            };
-        //SR
-        //Team - Henry Andrews
-        UsersModel us8 = new UsersModel
-            {
-                Id = 8,
-                FirstName = "Olivia",
-                LastName = "Mills",
-                Technologies = ".NET Maui, Wrapping Up, AWS, Angular",
-                ProgrammingLanguages = "C#, Java, JavaScript, SQL",
-                ReportToEmpId = 3
-
-            };
-        UsersModel us9 = new UsersModel
-            {
-                Id = 9,
-                FirstName = "Benjamin",
-                LastName = "Lucas",
-                Technologies = "Wrapping Up, AWS, VueJS, Angular",
-                ProgrammingLanguages = "JavaScript, Ruby, pascal, c++",
-                ReportToEmpId = 3
-
-            };
-
-        UsersModel us10 = new UsersModel
-            {
-                Id = 10,
-                FirstName = "Sarah",
-                LastName = "Henderson",
-                Technologies = "MongoDB, SwiftUI, .NET Maui, AWS",
-                ProgrammingLanguages = "C#, python, php, SQL",
-                ReportToEmpId = 3
-
-            };
-        //SR
-        //John Jameson
-        UsersModel us11 = new UsersModel
-            {
-                Id = 11,
-                FirstName = "Emma",
-                LastName = "Lee",
-                Technologies = "React Native, VueJS, Angular",
-                ProgrammingLanguages = "C#, Java, JavaScript, SQL",
-                ReportToEmpId = 4
-
-            };
-        UsersModel us12 = new UsersModel
-            {
-                Id = 12,
-                FirstName = "Ava",
-                LastName = "Williams",
-                Technologies = "React Native, MongoDB, VueJS, Angular",
-                ProgrammingLanguages = "C#, Java, JavaScript, Ruby",
-                ReportToEmpId = 4
-
-            };
-        UsersModel us13 = new UsersModel
-            {
-                Id = 13,
-                FirstName = "Angela",
-                LastName = "Moore",
-                Technologies = "React Native, MongoDB",
-                ProgrammingLanguages = "C#, Java, python, php, SQL",
-                ReportToEmpId = 4
-            };
-
-
-        usersData = new List<UsersModel> { us1, us2, us3, us4, us5, us6, us7, us8, us9, us10, us11, us12, us13 };
-
+        //VisibleProp = false;
     }
-    public class UsersModel
+
+    public async void ActionBeginHandler(ActionEventArgs<UsersModel> args)
     {
-        public int Id { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Technologies { get; set; } 
-        public string ProgrammingLanguages { get; set; }
-        public int? ReportToEmpId { get; set; }
+        if (args.RequestType.Equals(Syncfusion.Blazor.Grids.Action.Save))
+        {
+            if (args.Action == "Add")
+            {
+                await UsersManagmentService.AddUsers(args.Data);
+            }
+            else if(args.Action == "Edit")
+            {
+                await UsersManagmentService.UpdateUsers(args.Data);
+            }
+        }
+        else if (args.RequestType.Equals(Syncfusion.Blazor.Grids.Action.Delete))
+        {
+            await UsersManagmentService.DeleteUsers(args.Data.Id);
+        }
+    }
+
+    public async void ActionCompleteHandler(ActionEventArgs<UsersModel> args)
+    {
+        if (args.RequestType.Equals(Syncfusion.Blazor.Grids.Action.Save))
+        {
+            if (args.Action == "Add")
+            {
+                usersData = await UsersManagmentService.GetUsers();
+                SfUsersGrid?.Refresh();
+            }
+        }
+    }
+    public async void ToolbarBtnClickHandler(Syncfusion.Blazor.Navigations.ClickEventArgs args)
+    {
+        if (args.Item.Id.Contains("_excelxport"))
+        {
+            await SfUsersGrid?.ExportToExcelAsync();
+        }
+        else if (args.Item.Id.Contains("_pdfexport"))
+        {
+            await SfUsersGrid?.ExportToPdfAsync();
+        }
+    }
+    private string GetDialogHeaderText(UsersModel usersModel)
+    {
+        if(usersModel.Id == 0)
+        {
+            DialogButtonCaption = "Add";
+            return "Add User";
+        }
+        else
+        {
+            DialogButtonCaption = "Update";
+            return $"Edit Details: {usersModel.FirstName} {usersModel.LastName}";
+        }
+    }
+
+    private async Task Cancel()
+    {
+        await SfUsersGrid.CloseEditAsync();
+    }
+    private async Task Save()
+    {
+        await SfUsersGrid.EndEditAsync();
     }
 
 }
