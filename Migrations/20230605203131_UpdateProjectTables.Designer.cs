@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using StudentManagmentApp.Data;
 
@@ -11,9 +12,11 @@ using StudentManagmentApp.Data;
 namespace StudentManagmentApp.Migrations
 {
     [DbContext(typeof(StudentManagmentDbContext))]
-    partial class StudentManagmentDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230605203131_UpdateProjectTables")]
+    partial class UpdateProjectTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -44,10 +47,6 @@ namespace StudentManagmentApp.Migrations
                     b.Property<DateTime>("PlannedEndDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("ProgrammingLanguages")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("RepositoryLink")
                         .HasColumnType("nvarchar(max)");
 
@@ -73,47 +72,6 @@ namespace StudentManagmentApp.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Projects");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Description = "Lorem ipsum dolor sit amet. Qui esse quos est impedit ipsa et modi saepe in culpa quia.",
-                            DifficultyLevel = "Medium",
-                            PlannedEndDate = new DateTime(2023, 6, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            ProgrammingLanguages = "C#, JS",
-                            Requirements = "Understanding of Algorithms and Data Structures",
-                            Status = "Created",
-                            TeamId = 1,
-                            TechnologyStack = "MongoDB, ASP.NET, SQL",
-                            Title = "Mirage app"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Description = "Lorem ipsum dolor sit amet. Qui esse quos est impedit ipsa et modi saepe in culpa quia.",
-                            DifficultyLevel = "Low",
-                            PlannedEndDate = new DateTime(2023, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            ProgrammingLanguages = "C#, JS",
-                            Requirements = "Understanding of Algorithms and Data Structures",
-                            Status = "Started",
-                            TeamId = 2,
-                            TechnologyStack = "ASP.NET, SQL",
-                            Title = "Nexus app"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Description = "Lorem ipsum dolor sit amet. Qui esse quos est impedit ipsa et modi saepe in culpa quia.",
-                            DifficultyLevel = "High",
-                            PlannedEndDate = new DateTime(2023, 6, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            ProgrammingLanguages = "JS",
-                            Requirements = "Understanding of Algorithms and Data Structures",
-                            Status = "Created",
-                            TeamId = 3,
-                            TechnologyStack = "Angular",
-                            Title = "Echo app"
-                        });
                 });
 
             modelBuilder.Entity("StudentManagmentApp.Entities.Team", b =>
@@ -131,23 +89,6 @@ namespace StudentManagmentApp.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Teams");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "Mirage"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "Nexus"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "Echo"
-                        });
                 });
 
             modelBuilder.Entity("StudentManagmentApp.Entities.Users", b =>

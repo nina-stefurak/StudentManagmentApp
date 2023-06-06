@@ -15,8 +15,14 @@ namespace StudentManagmentApp.Data
             base.OnModelCreating(modelBuilder);
 
             SeedData.AddUsersData(modelBuilder);
+
+            SeedData.AddProjectData(modelBuilder);
         }
 
         public DbSet<Users> Users { get; set; }
+
+        public DbSet<Project> Projects { get; set; }
+
+        public DbSet<Team> Teams { get; set; }
     }
 }

@@ -158,5 +158,82 @@ namespace StudentManagmentApp.Data
 
             });
         }
+
+        public static void AddProjectData(ModelBuilder modelBuilder)
+        {
+            //Add Teams -Mirage - Nexus - Echo
+
+            modelBuilder.Entity<Team>().HasData(new Team
+            {
+                Id = 1,
+                Name = "Mirage"
+
+            });
+            modelBuilder.Entity<Team>().HasData(new Team
+            {
+                Id = 2,
+                Name = "Nexus"
+
+            });
+            modelBuilder.Entity<Team>().HasData(new Team
+            {
+                Id = 3,
+                Name = "Echo"
+
+            });
+            //Projects
+            //Team Stars
+            modelBuilder.Entity<Project>().HasData(new Project
+            {
+                Id = 1,
+                Title = "Mirage app",
+                Description = "Lorem ipsum dolor sit amet. Qui esse quos est impedit ipsa et modi saepe in culpa quia.",
+                Requirements = "Understanding of Algorithms and Data Structures",
+                ProgrammingLanguages = "C#, JS",
+                TechnologyStack = "MongoDB, ASP.NET, SQL",//MongoDB,ASP.NET,Microsoft SQL Server
+                DifficultyLevel = "Medium",//Low, medium, High, 
+                PlannedEndDate = DateTime.Parse("10 Jun 2023"),
+                ActualEndDate = null,
+                RepositoryLink = null,
+                Status = "Created",//Created, Completed lineup, Started, Finished stage, Added feature, Tested, Finished
+                TeamId = 1
+
+            });
+            //Team Nexus
+            modelBuilder.Entity<Project>().HasData(new Project
+            {
+                Id = 2,
+                Title = "Nexus app",
+                Description = "Lorem ipsum dolor sit amet. Qui esse quos est impedit ipsa et modi saepe in culpa quia.",
+                Requirements = "Understanding of Algorithms and Data Structures",
+                ProgrammingLanguages = "C#, JS",
+                TechnologyStack = "ASP.NET, SQL",//MongoDB,ASP.NET,Microsoft SQL Server
+                DifficultyLevel = "Low",//Low, medium, High, 
+                PlannedEndDate = DateTime.Parse("15 Jun 2023"),
+                ActualEndDate = null,
+                RepositoryLink = null,
+                Status = "Started",//Created, Completed lineup, Started, Finished stage, Added feature, Tested, Finished
+                TeamId = 2
+
+            });
+            //Team Echo
+            modelBuilder.Entity<Project>().HasData(new Project
+            {
+                Id = 3,
+                Title = "Echo app",
+                Description = "Lorem ipsum dolor sit amet. Qui esse quos est impedit ipsa et modi saepe in culpa quia.",
+                Requirements = "Understanding of Algorithms and Data Structures",
+                ProgrammingLanguages = "JS",
+                TechnologyStack = "Angular",//MongoDB,ASP.NET,Microsoft SQL Server
+                DifficultyLevel = "High",//Low, medium, High, 
+                PlannedEndDate = DateTime.Parse("20 Jun 2023"),
+                ActualEndDate = null,
+                RepositoryLink = null,
+                Status = "Created",//Created, Completed lineup, Started, Finished stage, Added feature, Tested, Finished
+                TeamId = 3
+
+            });
+        }
+
     }
 }
