@@ -165,19 +165,19 @@ namespace StudentManagmentApp.Data
 
             modelBuilder.Entity<Team>().HasData(new Team
             {
-                Id = 1,
+                TeamId = 1,
                 Name = "Mirage"
 
             });
             modelBuilder.Entity<Team>().HasData(new Team
             {
-                Id = 2,
+                TeamId = 2,
                 Name = "Nexus"
 
             });
             modelBuilder.Entity<Team>().HasData(new Team
             {
-                Id = 3,
+                TeamId = 3,
                 Name = "Echo"
 
             });
@@ -196,7 +196,8 @@ namespace StudentManagmentApp.Data
                 ActualEndDate = null,
                 RepositoryLink = null,
                 Status = "Created",//Created, Completed lineup, Started, Finished stage, Added feature, Tested, Finished
-                TeamId = 1
+                TeamId = 1,
+                Visibility = true
 
             });
             //Team Nexus
@@ -213,7 +214,8 @@ namespace StudentManagmentApp.Data
                 ActualEndDate = null,
                 RepositoryLink = null,
                 Status = "Started",//Created, Completed lineup, Started, Finished stage, Added feature, Tested, Finished
-                TeamId = 2
+                TeamId = 2,
+                Visibility = true
 
             });
             //Team Echo
@@ -230,7 +232,8 @@ namespace StudentManagmentApp.Data
                 ActualEndDate = null,
                 RepositoryLink = null,
                 Status = "Created",//Created, Completed lineup, Started, Finished stage, Added feature, Tested, Finished
-                TeamId = 3
+                TeamId = 3,
+                Visibility = true
 
             });
         }

@@ -12,7 +12,8 @@
         public DateTime PlannedEndDate { get; set; }
         public DateTime? ActualEndDate { get; set;}
         public string? RepositoryLink { get; set; }
-        public string Status { get; set; }
+        public string? Status { get; set; }
         public int TeamId { get; set; }
+        public bool Visibility { get; set; }
     }
 }

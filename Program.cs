@@ -21,7 +21,9 @@ builder.Services.AddSingleton<WeatherForecastService>();
 
 builder.Services.AddSyncfusionBlazor(); //UI components library for creating Blazor WebAssembly and Server applications
 
-builder.Services.AddScoped<IUsersManagmentService, UsersManagmentService>();
+builder.Services.AddScoped<IUsersManagmentService, UsersManagmentService>();//register for dependency injection
+builder.Services.AddScoped<IProjectService, ProjectService>();
+
 
 var app = builder.Build();
 

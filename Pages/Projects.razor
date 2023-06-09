@@ -1,6 +1,255 @@
 ﻿@page "/Projects"
-<h3>Projects</h3>
+@using Syncfusion.Blazor
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.DropDowns
+@using Syncfusion.Blazor.Grids;
+@using Syncfusion.Blazor.Inputs;
+
+@inject IProjectService ProjectService
+
+<h3>Projects List</h3>
+<div style="max-width:1200px">
+    <SfGrid @ref="SfProjectGrid" DataSource="@projectData"
+            AllowTextWrap="true" AllowPaging="true" Toolbar="@toolbar">
+        <GridTextWrapSettings WrapMode="WrapMode.Both"></GridTextWrapSettings>
+        <GridEditSettings Mode = "EditMode.Dialog" AllowAdding = "true" AllowEditing = "true" AllowDeleting = "true">
+            <HeaderTemplate>
+                <span>@(GetDialogHeaderText(context as ProjectModel))</span>
+            </HeaderTemplate>
+            <FooterTemplate>
+                <SfButton OnClick="@Save" IsPrimary ="true">@DialogButtonCaption</SfButton>
+                <SfButton OnClick="@Cancel">Cancel</SfButton>
+            </FooterTemplate>
+        </GridEditSettings>
+        <GridPageSettings PageSize="5"></GridPageSettings>
+        <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Menu"></GridFilterSettings>
+        <GridEvents OnActionBegin="ActionBeginHandler" OnActionComplete="ActionCompleteHandler" TValue="ProjectModel"></GridEvents>
+
+        <GridColumns>
+            <GridColumn AllowAdding = "false" IsPrimaryKey = "true" Field="@nameof(ProjectModel.Id)" Visible="false"></GridColumn>
+            <GridColumn HeaderText="Title" Field="@nameof(ProjectModel.Title)" Width="60px"></GridColumn>
+            <GridColumn HeaderText="Description" Field="@nameof(ProjectModel.Description)" ClipMode="ClipMode.Ellipsis" Width="150px"></GridColumn>
+            <GridColumn HeaderText="Requirements" Field="@nameof(ProjectModel.Requirements)" ClipMode="ClipMode.Ellipsis" Width="150px"></GridColumn>
+            <GridColumn HeaderText="Programing Languages" Field="@nameof(ProjectModel.ProgrammingLanguages)" Width="100px">
+                <EditTemplate>
+                    <SfMultiSelect DataSource="progLanCollection" TItem="string" TValue="string" 
+                        @bind-value = "@((context as ProjectModel).ProgrammingLanguages)"
+                                   Placeholder="Programming Languages"
+                                   FloatLabelType="FloatLabelType.Always">
+                    </SfMultiSelect>
+                </EditTemplate>
+            </GridColumn>
+
+            <GridColumn HeaderText="Technology Stack" Field="@nameof(ProjectModel.TechnologyStack)" Width="100px">
+                <EditTemplate>
+                    <SfMultiSelect DataSource="techCollection" TItem="string" TValue="string"
+                                   @bind-value="@((context as ProjectModel).TechnologyStack)"
+                                   Placeholder="Technology Stack"
+                                   FloatLabelType="FloatLabelType.Always">
+                    </SfMultiSelect>
+                </EditTemplate>
+            </GridColumn>
+
+            <GridColumn HeaderText="Difficulty Level" Field="@nameof(ProjectModel.DifficultyLevel)" Width="100px">
+                <EditTemplate>
+                    <SfDropDownList DataSource="difficultyCollection" TItem="string" TValue="string"
+                                    @bind-Value="@((context as ProjectModel).DifficultyLevel)"
+                                    Placeholder="Difficulty Level"
+                                    FloatLabelType="FloatLabelType.Always">
+                    </SfDropDownList>
+                </EditTemplate>
+            </GridColumn>
+
+            <GridColumn HeaderText="Planned End Date" Field="@nameof(ProjectModel.PlannedEndDate)" Format="d" Width="100px"></GridColumn>
+            <GridColumn HeaderText="Actual End Date" Field="@nameof(ProjectModel.ActualEndDate)" Format="d" Width="100px"></GridColumn>
+            <GridColumn HeaderText="Repository Link" Field="@nameof(ProjectModel.RepositoryLink)" Width="100px"></GridColumn>
+            
+            <GridColumn HeaderText="Status" Field="@nameof(ProjectModel.Status)" Width="80px">
+                <EditTemplate>
+                    <SfDropDownList DataSource="statusCollection" TItem="string" TValue="string" 
+                        @bind-Value = "@((context as ProjectModel).Status)"
+                        Placeholder="Status"
+                        FloatLabelType="FloatLabelType.Always">
+                    </SfDropDownList>
+                </EditTemplate>
+            </GridColumn>
+
+            <GridForeignColumn HeaderText="Team Name" TValue="Team" 
+                                        Field="@nameof(ProjectModel.TeamId)"
+                                        ForeignDataSource="teamData"
+                               ForeignKeyValue="Name" Width="60px">
+                <EditTemplate>
+                    <SfDropDownList @bind-value ="@((context as ProjectModel).TeamId)"
+                                                    ID="TeamId"
+                                                    DataSource="teamData" TItem="Team"
+                                                    TValue="int"
+                                    Placeholder="Team Name"
+                                    FloatLabelType="FloatLabelType.Always">
+                        <DropDownListFieldSettings Text="Name" Value="TeamId"></DropDownListFieldSettings>
+                    </SfDropDownList>
+                </EditTemplate>
+            </GridForeignColumn>
+
+        <GridColumn HeaderText="" Width="110px">
+            <GridCommandColumns>
+                <GridCommandColumn Type= "CommandButtonType.Edit" ButtonOption="@(new CommandButtonOptions(){
+                                                        IconCss = "e-icons e-edit",
+                                                        CssClass = "e-flat"
+                                                    })">
+
+                </GridCommandColumn>
+                <GridCommandColumn Type="CommandButtonType.Delete" ButtonOption="@(new CommandButtonOptions(){
+                                                        IconCss = "e-icons e-delete",
+                                                        CssClass = "e-flat"
+                                                    })">
+
+                </GridCommandColumn>
+                <GridCommandColumn Type="CommandButtonType.Save" ButtonOption="@(new CommandButtonOptions(){
+                                                        IconCss = "e-icons e-update",
+                                                        CssClass = "e-flat"
+                                                    })">
+
+                </GridCommandColumn>
+                <GridCommandColumn Type="CommandButtonType.Cancel" ButtonOption="@(new CommandButtonOptions(){
+                                                        IconCss = "e-icons e-cancel-icon",
+                                                        CssClass = "e-flat"
+                                                    })">
+
+                </GridCommandColumn>
+            </GridCommandColumns>
+        </GridColumn>
+        </GridColumns>
+    </SfGrid>
+</div>
+
 
 @code {
 
+    private enum ProgLanVal
+    {
+        JS,
+        C,
+        CSharp,
+        Java,
+        Phyton,
+        Swift,
+        Kotlin,
+        Ruby,
+        PHP,
+        TypeScript,
+        CplusPlus,
+        Other
+    }
+    private string[] progLanCollection = Enum.GetNames(typeof(ProgLanVal));
+
+    private enum TechStack
+    {
+        React,
+        ReactNative,
+        NextJS,
+        TypeScript,
+        GraphQL,
+        MongoDB,
+        Docker,
+        MaterialUI,
+        StyledComponents,
+        Angular,
+        Vue,
+        ASPNET,
+        Django,
+        Flask,
+        Express,
+        RubyOnRails,
+        Other
+    }
+    private string[] techCollection = Enum.GetNames(typeof(TechStack));
+
+    private enum DifficultyList
+    {
+        Easy,
+        Medium,
+        Hard
+    }
+
+    private string[] difficultyCollection = Enum.GetNames(typeof(DifficultyList));
+
+    private enum StatusList
+    {
+        Create,
+        Started,
+        InProgres,
+        Done,
+        Cancel
+    }
+
+    private string[] statusCollection = Enum.GetNames(typeof(StatusList));
+
+    private string DialogButtonCaption { get; set; }
+
+    private SfGrid<ProjectModel>? SfProjectGrid { get; set; }
+
+    private List<ProjectModel>? projectData = null;
+
+    private List<Team>? teamData;
+
+    private List<object> toolbar = new List<object> { "Add", "Search" };
+
+    protected override async Task OnInitializedAsync()
+    {
+        projectData = await ProjectService.GetProjects();
+        teamData = await ProjectService.GetTeams();
+    }
+    public async void ActionBeginHandler(ActionEventArgs<ProjectModel> args)
+    {
+        if (args.RequestType.Equals(Syncfusion.Blazor.Grids.Action.Save))
+        {
+            if (args.Action == "Add")
+            {
+                await ProjectService.AddProject(args.Data);
+            }
+            else if (args.Action == "Edit")
+            {
+                await ProjectService.UpdateProject(args.Data);
+            }
+        }
+        else if (args.RequestType.Equals(Syncfusion.Blazor.Grids.Action.Delete))
+        {
+            await ProjectService.DeleteProject(args.Data.Id);
+        }
+    }
+
+    public async void ActionCompleteHandler(ActionEventArgs<ProjectModel> args)
+    {
+        if (args.RequestType.Equals(Syncfusion.Blazor.Grids.Action.Save))
+        {
+            if (args.Action == "Add")
+            {
+                projectData = await ProjectService.GetProjects();
+                SfProjectGrid?.Refresh();
+            }
+        }
+    }
+
+    private string GetDialogHeaderText(ProjectModel projectModel)
+    {
+        if (projectModel.Id == 0)
+        {
+            DialogButtonCaption = "Add";
+            return "Add Project";
+        }
+        else
+        {
+            DialogButtonCaption = "Update";
+            return $"Edit Details: {projectModel.Title} {projectModel.Description}";
+        }
+    }
+
+    private async Task Cancel()
+    {
+        await SfProjectGrid.CloseEditAsync();
+    }
+    private async Task Save()
+    {
+        await SfProjectGrid.EndEditAsync();
+    }
 }

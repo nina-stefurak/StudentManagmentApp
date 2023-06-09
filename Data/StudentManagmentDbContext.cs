@@ -21,7 +21,7 @@ namespace StudentManagmentApp.Data
 
         public DbSet<Users> Users { get; set; }
 
-        public DbSet<Project> Projects { get; set; }
+        public DbSet<Project> Project { get; set; }
 
         public DbSet<Team> Teams { get; set; }
     }

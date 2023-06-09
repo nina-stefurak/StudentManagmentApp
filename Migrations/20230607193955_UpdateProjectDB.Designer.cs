@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using StudentManagmentApp.Data;
 
@@ -11,9 +12,11 @@ using StudentManagmentApp.Data;
 namespace StudentManagmentApp.Migrations
 {
     [DbContext(typeof(StudentManagmentDbContext))]
-    partial class StudentManagmentDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230607193955_UpdateProjectDB")]
+    partial class UpdateProjectDB
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -69,9 +72,6 @@ namespace StudentManagmentApp.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("Visibility")
-                        .HasColumnType("bit");
-
                     b.HasKey("Id");
 
                     b.ToTable("Project");
@@ -88,8 +88,7 @@ namespace StudentManagmentApp.Migrations
                             Status = "Created",
                             TeamId = 1,
                             TechnologyStack = "MongoDB, ASP.NET, SQL",
-                            Title = "Mirage app",
-                            Visibility = true
+                            Title = "Mirage app"
                         },
                         new
                         {
@@ -102,8 +101,7 @@ namespace StudentManagmentApp.Migrations
                             Status = "Started",
                             TeamId = 2,
                             TechnologyStack = "ASP.NET, SQL",
-                            Title = "Nexus app",
-                            Visibility = true
+                            Title = "Nexus app"
                         },
                         new
                         {
@@ -116,8 +114,7 @@ namespace StudentManagmentApp.Migrations
                             Status = "Created",
                             TeamId = 3,
                             TechnologyStack = "Angular",
-                            Title = "Echo app",
-                            Visibility = true
+                            Title = "Echo app"
                         });
                 });
 

@@ -14,7 +14,6 @@
         public string? RepositoryLink { get; set; }
         public string Status { get; set; }
         public int TeamId { get; set; }
-        public string TeamName { get; set; }
-
+        public bool Visibility { get; set; }
     }
 }
