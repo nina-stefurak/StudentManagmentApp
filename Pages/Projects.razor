@@ -8,7 +8,7 @@
 @inject IProjectService ProjectService
 
 <h3>Projects List</h3>
-<div style="max-width:1200px">
+<div style="max-width:1300px">
     <SfGrid @ref="SfProjectGrid" DataSource="@projectData"
             AllowTextWrap="true" AllowPaging="true" Toolbar="@toolbar">
         <GridTextWrapSettings WrapMode="WrapMode.Both"></GridTextWrapSettings>
@@ -29,7 +29,7 @@
             <GridColumn AllowAdding = "false" IsPrimaryKey = "true" Field="@nameof(ProjectModel.Id)" Visible="false"></GridColumn>
             <GridColumn HeaderText="Title" Field="@nameof(ProjectModel.Title)" Width="60px"></GridColumn>
             <GridColumn HeaderText="Description" Field="@nameof(ProjectModel.Description)" ClipMode="ClipMode.Ellipsis" Width="150px"></GridColumn>
-            <GridColumn HeaderText="Requirements" Field="@nameof(ProjectModel.Requirements)" ClipMode="ClipMode.Ellipsis" Width="150px"></GridColumn>
+            <GridColumn HeaderText="Requirements" Field="@nameof(ProjectModel.Requirements)" ClipMode="ClipMode.Ellipsis" Width="120px"></GridColumn>
             <GridColumn HeaderText="Programing Languages" Field="@nameof(ProjectModel.ProgrammingLanguages)" Width="100px">
                 <EditTemplate>
                     <SfMultiSelect DataSource="progLanCollection" TItem="string" TValue="string" 
@@ -89,6 +89,16 @@
                     </SfDropDownList>
                 </EditTemplate>
             </GridForeignColumn>
+
+            <GridColumn HeaderText="Visibility" Field="@nameof(ProjectModel.Visibility)" Width="80px">
+                <EditTemplate>
+                    <SfDropDownList DataSource="visCollection" TItem="string" TValue="string"
+                                    @bind-Value="@((context as ProjectModel).Status)"
+                                    Placeholder="Visibility"
+                                    FloatLabelType="FloatLabelType.Always">
+                    </SfDropDownList>
+                </EditTemplate>
+            </GridColumn>
 
         <GridColumn HeaderText="" Width="110px">
             <GridCommandColumns>
@@ -183,6 +193,14 @@
     }
 
     private string[] statusCollection = Enum.GetNames(typeof(StatusList));
+
+    private enum VisibilityList
+    {
+        Private,
+        Public
+    }
+
+    private string[] visCollection = Enum.GetNames(typeof(VisibilityList));
 
     private string DialogButtonCaption { get; set; }
 

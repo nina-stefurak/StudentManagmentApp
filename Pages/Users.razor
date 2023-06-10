@@ -27,8 +27,8 @@
             <GridColumn HeaderText="Last name" Field="@nameof(UsersModel.LastName)" Width="120px"></GridColumn>
             <GridColumn HeaderText="Email" Field="@nameof(UsersModel.Email)" Width="170px"></GridColumn>
             <GridColumn Field="@nameof(UsersModel.Technologies)" Width="170px"></GridColumn>
-            <GridColumn HeaderText="Programming Languages" Field="@nameof(UsersModel.ProgrammingLanguages)"></GridColumn>
-            <GridColumn HeaderText="Skills rating" Field="@nameof(UsersModel.SkillsRating)" Width="110px"></GridColumn>
+            <GridColumn HeaderText="Programming Languages" Field="@nameof(UsersModel.ProgrammingLanguages)" ClipMode="ClipMode.Ellipsis"></GridColumn>
+            <GridColumn HeaderText="Rating" Field="@nameof(UsersModel.SkillsRating)" Width="110px"></GridColumn>
 
         <GridColumn HeaderText="" Width="110px">
             <GridCommandColumns>

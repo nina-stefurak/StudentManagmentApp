@@ -69,8 +69,9 @@ namespace StudentManagmentApp.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("Visibility")
-                        .HasColumnType("bit");
+                    b.Property<string>("Visibility")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -85,11 +86,11 @@ namespace StudentManagmentApp.Migrations
                             PlannedEndDate = new DateTime(2023, 6, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ProgrammingLanguages = "C#, JS",
                             Requirements = "Understanding of Algorithms and Data Structures",
-                            Status = "Created",
+                            Status = "Create",
                             TeamId = 1,
                             TechnologyStack = "MongoDB, ASP.NET, SQL",
                             Title = "Mirage app",
-                            Visibility = true
+                            Visibility = "Public"
                         },
                         new
                         {
@@ -103,7 +104,7 @@ namespace StudentManagmentApp.Migrations
                             TeamId = 2,
                             TechnologyStack = "ASP.NET, SQL",
                             Title = "Nexus app",
-                            Visibility = true
+                            Visibility = "Public"
                         },
                         new
                         {
@@ -113,11 +114,11 @@ namespace StudentManagmentApp.Migrations
                             PlannedEndDate = new DateTime(2023, 6, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ProgrammingLanguages = "JS",
                             Requirements = "Understanding of Algorithms and Data Structures",
-                            Status = "Created",
+                            Status = "Create",
                             TeamId = 3,
                             TechnologyStack = "Angular",
                             Title = "Echo app",
-                            Visibility = true
+                            Visibility = "Public"
                         });
                 });
 

@@ -195,9 +195,9 @@ namespace StudentManagmentApp.Data
                 PlannedEndDate = DateTime.Parse("10 Jun 2023"),
                 ActualEndDate = null,
                 RepositoryLink = null,
-                Status = "Created",//Created, Completed lineup, Started, Finished stage, Added feature, Tested, Finished
+                Status = "Create",//Created, Completed lineup, Started, Finished stage, Added feature, Tested, Finished
                 TeamId = 1,
-                Visibility = true
+                Visibility = "Public"
 
             });
             //Team Nexus
@@ -215,7 +215,7 @@ namespace StudentManagmentApp.Data
                 RepositoryLink = null,
                 Status = "Started",//Created, Completed lineup, Started, Finished stage, Added feature, Tested, Finished
                 TeamId = 2,
-                Visibility = true
+                Visibility = "Public"
 
             });
             //Team Echo
@@ -231,9 +231,9 @@ namespace StudentManagmentApp.Data
                 PlannedEndDate = DateTime.Parse("20 Jun 2023"),
                 ActualEndDate = null,
                 RepositoryLink = null,
-                Status = "Created",//Created, Completed lineup, Started, Finished stage, Added feature, Tested, Finished
+                Status = "Create",//Created, Completed lineup, Started, Finished stage, Added feature, Tested, Finished
                 TeamId = 3,
-                Visibility = true
+                Visibility = "Public"
 
             });
         }
