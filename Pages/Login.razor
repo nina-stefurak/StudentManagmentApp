@@ -1,0 +1,44 @@
+﻿@page "/login"
+@using Microsoft.AspNetCore.Identity
+@using System.ComponentModel.DataAnnotations;
+@using StudentProjectManager.Models.auth;
+@inject UserManager<ApplicationUser> UserManager
+@inject SignInManager<ApplicationUser> SignInManager
+
+<h3>Login</h3>
+@if (!string.IsNullOrEmpty(ErrorMessage))
+{
+    <div class="alert alert-danger">
+        @ErrorMessage
+    </div>
+}
+<form method="post" action="/customlogin">
+    <div class="form-group">
+        <label for="UserName">Username:</label>
+        <input id="UserName" name="UserName" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label for="Password">Password:</label>
+        <input id="Password" name="Password" type="password" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Login</button>
+</form>
+
+@code {
+    private string ErrorMessage { get; set; }
+
+    protected override void OnInitialized()
+    {
+        var error = NavigationManager.ToBaseRelativePath(NavigationManager.Uri).Contains("error=true");
+        if (error)
+        {
+            ErrorMessage = "Login failed. Please try again.";
+        }
+        base.OnInitialized();
+    }
+
+    @inject NavigationManager NavigationManager
+
+}

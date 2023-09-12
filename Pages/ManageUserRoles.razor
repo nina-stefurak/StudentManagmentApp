@@ -1,0 +1,114 @@
+﻿@page "/manage-user-roles"
+@using Microsoft.AspNetCore.Identity
+@using StudentProjectManager.Models.auth;
+@inject UserManager<ApplicationUser> UserManager
+@inject RoleManager<ApplicationRole> RoleManager
+
+<h3>Manage User Roles</h3>
+
+@if (isLoading)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Roles</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in users)
+            {
+                <tr>
+                    <td>@user.UserName</td>
+                    <td>@string.Join(", ", user.Roles)</td>
+                    <td>
+                        <button @onclick="() => PromoteToAdmin(user)">Make Admin</button>
+                        <button @onclick="() => DemoteFromAdmin(user)">Remove Admin</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<ApplicationUser> users = new List<ApplicationUser>();
+    private bool isLoading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        isLoading = true;
+        users = UserManager.Users.ToList();
+        isLoading = false;
+    }
+    private async Task PromoteToAdmin(ApplicationUser user)
+    {
+        try
+        {
+            if (!user.Roles.Contains("Admin"))
+            {
+                user.Roles.Add("Admin");
+                // If the user role exists, remove it to avoid having both User and Admin roles
+                user.Roles.Remove("User");
+
+                var result = await UserManager.UpdateAsync(user);
+                if (!result.Succeeded)
+                {
+                    Console.WriteLine("Failed to update user roles: " + string.Join(", ", result.Errors.Select(e => e.Description)));
+                }
+
+                StateHasChanged();
+            }
+            else
+            {
+                Console.WriteLine("The user is already in the Admin role, no changes were made.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error promoting user to admin: {ex.Message}");
+        }
+    }
+
+
+    private async Task DemoteFromAdmin(ApplicationUser user)
+    {
+        try
+        {
+            if (user.Roles.Contains("Admin"))
+            {
+                user.Roles.Remove("Admin");
+
+                if (user.Roles.Count == 0)
+                {
+                    user.Roles.Add("User");
+                }
+
+                var result = await UserManager.UpdateAsync(user);
+                if (!result.Succeeded)
+                {
+                    Console.WriteLine("Failed to update user roles: " + string.Join(", ", result.Errors.Select(e => e.Description)));
+                }
+
+                StateHasChanged();
+            }
+            else
+            {
+                Console.WriteLine("The user is not in the Admin role, no changes were made.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error demoting user from admin: {ex.Message}");
+        }
+    }
+
+
+
+
+}

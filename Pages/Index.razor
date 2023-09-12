@@ -1,8 +1,32 @@
 ﻿@page "/"
+@using StudentProjectManager.Models;
+@using StudentProjectManager.Repository;
 
 <PageTitle>Index</PageTitle>
 
-<h1>Hello!</h1>
+@inject IHttpContextAccessor HttpContextAccessor
 
-Welcome to project managment app for students.
+@if (username != null)
+{
+    <p>Welcome, <b>@username</b>!</p>
+}
+else
+{
+    <p>Welcome, guest!</p>
+}
 
+
+
+@code {
+    private string username;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        var user = HttpContextAccessor.HttpContext.User;
+        if (user.Identity.IsAuthenticated)
+        {
+            username = user.Identity.Name;
+        }
+    }
+}

@@ -1,0 +1,263 @@
+﻿@page "/create-team"
+@using Microsoft.AspNetCore.Identity
+@using StudentProjectManager.Models.auth
+@using StudentProjectManager.Models
+@using StudentProjectManager.Repository
+@inject UserManager<ApplicationUser> UserManager
+@inject TeamRepository TeamRepository
+@inject ILogger<CreateTeam> Logger
+@inject NavigationManager NavigationManager
+@inject SignInManager<ApplicationUser> SignInManager
+@inject IHttpContextAccessor HttpContextAccessor
+@inject ProjectRepository ProjectRepository
+
+
+<h3>Teams</h3>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Team Name</th>
+            <th>Team Leader</th>
+            <th>Member User IDs</th>
+            <th>Capabilities</th>
+            <th>Positions</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var team in teams)
+        {
+            <tr>
+                <td>@team.Name</td>
+                <td>@users.FirstOrDefault(u => u.User.Id == team.TeamLeaderId)?.User.UserName</td>
+                <td>@string.Join(", ", team.MemberUserIds.Select(id => users.FirstOrDefault(u => u.User.Id == id)?.User.UserName))</td>
+                <td>@string.Join(", ", team.GetCapabilities(users.Where(u => team.MemberUserIds.Contains(u.User.Id)).Select(u => u.User).ToList()))</td>
+                <td>@string.Join(", ", team.GetPositions(users.Where(u => team.MemberUserIds.Contains(u.User.Id)).Select(u => u.User).ToList()))</td>
+                <td>
+                    @if (IsAdmin)
+                    {
+                        <button class="btn btn-danger" @onclick="(() => DeleteTeam(team.Id))">Delete</button>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h3>Project Candidates</h3>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Project Name</th>
+            <th>Candidates</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var project in projects.Where(p => p.TeamId == selectedTeamId))
+        {
+            <tr>
+                <td>@project.Name</td>
+                <td>
+                    @foreach (var candidateId in project.CandidateUserIds)
+                    {
+                        var candidate = users.FirstOrDefault(u => u.User.Id == candidateId);
+                        if (candidate != null)
+                        {
+                            <div>@candidate.User.UserName</div>
+                        }
+                    }
+                </td>
+                <td>
+                    @foreach (var candidateId in project.CandidateUserIds)
+                    {
+                        var candidate = users.FirstOrDefault(u => u.User.Id == candidateId);
+                        <button class="btn btn-primary" @onclick="(() => AcceptCandidate(project.TeamId, candidateId, project))">Accept @candidate.User.UserName</button>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+
+<h3>Create Team</h3>
+
+<!-- Form to create a new team -->
+<EditForm Model="newTeam" OnValidSubmit="CreateTeamTask">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <!-- Step 1: Search Input Field -->
+    <div class="form-group">
+        <label for="search">Search:</label>
+        <input id="search" type="text" class="form-control" @bind="searchQuery" @bind:event="oninput" placeholder="Search by name, position, or capability" />
+    </div>
+
+    <!-- Step 2: Dropdown List -->
+    <div class="form-group">
+        <label for="students">Students:</label>
+        <select id="students" multiple class="form-control" @onchange="OnUserSelected">
+            @foreach (var user in filteredUsers)
+            {
+                <option value="@user.User.Id">@user.User.UserName (Position: @user.User.Position, Capabilities: @string.Join(", ", user.User.Capabilities))</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="teamName">Team name:</label>
+        <InputText id="teamName" class="form-control" @bind-Value="newTeam.Name" placeholder="Team Name" />
+    </div>
+
+    <div class="form-group">
+        <label for="teamLeader">Team Leader:</label>
+        <select id="teamLeader" class="form-control" @bind="newTeam.TeamLeaderId" required>
+            <option value="">Select a team leader</option>
+            @foreach (var userId in selectedUserIds)
+            {
+                var user = users.FirstOrDefault(u => u.User.Id == userId)?.User;
+                if (user != null)
+                {
+                    <option value="@user.Id">@user.UserName</option>
+                }
+            }
+        </select>
+        @if (showLeaderSelectionError)
+        {
+            <span class="text-danger">Please select a team leader.</span>
+        }
+    </div>
+
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Create Team</button>
+    </div>
+</EditForm>
+
+
+
+
+@code {
+    private string selectedTeamId { get; set; }
+    private bool IsAdmin { get; set; }
+    private string searchQuery = string.Empty;
+    private List<string> selectedUserIds = new List<string>();
+    private List<Project> projects = new List<Project>();
+
+    private List<UserViewModel> filteredUsers => users
+        .Where(u => string.IsNullOrEmpty(searchQuery) ||
+                    (u.User != null &&
+                     (u.User.UserName.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+                      (u.User.Position != null && u.User.Position.Contains(searchQuery, StringComparison.OrdinalIgnoreCase)) ||
+                      (u.User.Capabilities != null && u.User.Capabilities.Any(c => c.Contains(searchQuery, StringComparison.OrdinalIgnoreCase)))
+                     )
+                    ))
+        .ToList();
+
+    private async Task OnUserSelected(ChangeEventArgs e)
+    {
+        if (e.Value is string[] selectedUserIdsArray)
+        {
+            selectedUserIds.Clear();
+            foreach (var selectedUserId in selectedUserIdsArray)
+            {
+                Logger.LogInformation("User selected with ID: {UserId}", selectedUserId);
+                selectedUserIds.Add(selectedUserId);
+            }
+        }
+        else
+        {
+            Logger.LogWarning("Unexpected value type: {ValueType}", e.Value.GetType());
+        }
+    }
+
+    private async Task AcceptCandidate(string teamId, string candidateId, Project project)
+    {
+        // Find the team by ID
+        var team = teams.FirstOrDefault(t => t.Id == teamId);
+        if (team != null)
+        {
+            // Add the candidate ID to the team's member list
+            if (team.MemberUserIds == null)
+            {
+                team.MemberUserIds = new List<string>();
+            }
+            team.MemberUserIds.Add(candidateId);
+
+            // Update the team in the database
+            await TeamRepository.UpdateTeam(team);
+
+            project.CandidateUserIds.Remove(candidateId);
+
+            await ProjectRepository.UpdateProject(project);
+
+            // Refresh the team list to reflect the changes
+            teams = await TeamRepository.GetAllTeamsAsync();
+        }
+    }
+
+
+    private async Task DeleteTeam(string teamId)
+    {
+        Logger.LogInformation("Deleting team with ID: {TeamId}", teamId);
+        await TeamRepository.DeleteTeam(teamId);
+        teams = await TeamRepository.GetAllTeamsAsync();
+    }
+
+
+    private List<Team> teams = new List<Team>();
+    private class UserViewModel
+    {
+        public ApplicationUser User { get; set; }
+        public bool IsSelected { get; set; }
+    }
+    private bool showLeaderSelectionError = false;
+    private Team newTeam = new Team();
+    private List<UserViewModel> users = new List<UserViewModel>();
+    private List<string> teamCapabilities = new List<string>();
+    private List<string> teamPositions = new List<string>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var currentUser = await UserManager.GetUserAsync(HttpContextAccessor.HttpContext.User);
+        teams = await TeamRepository.GetAllTeamsAsync();
+        if (currentUser != null)
+        {
+            IsAdmin = currentUser.Roles.Contains("Admin");
+            // Get the teams where the current user is the leader
+            var leaderTeams = teams.Where(t => t.TeamLeaderId == currentUser.Id).ToList();
+            Logger.LogInformation("Leader teams: {leaderTeams}", leaderTeams);
+            if (leaderTeams.Any())
+            {
+                // Setting the first team where the user is the leader as the selected team
+                selectedTeamId = leaderTeams.First().Id;
+            }
+        }
+
+        var userList = UserManager.Users.ToList();
+        users = userList.Select(u => new UserViewModel { User = u, IsSelected = false }).ToList();
+        projects = await ProjectRepository.GetAllProjectsAsync();
+    }
+
+    private async Task CreateTeamTask()
+    {
+        if (string.IsNullOrEmpty(newTeam.TeamLeaderId))
+        {
+            showLeaderSelectionError = true;
+            return;
+        }
+
+        showLeaderSelectionError = false;
+        Logger.LogInformation("Creating team with selected user IDs: {UserIds}", string.Join(", ", selectedUserIds));
+
+        newTeam.MemberUserIds = selectedUserIds;
+        // Save the new team to the database
+        await TeamRepository.CreateTeam(newTeam);
+
+        Logger.LogInformation("Team created successfully with name: {TeamName}", newTeam.Name);
+
+        // Refresh the whole page
+        NavigationManager.NavigateTo("/create-team", forceLoad: true);
+    }
+}

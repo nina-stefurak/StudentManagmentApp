@@ -1,0 +1,79 @@
+﻿@page "/register"
+@using Microsoft.AspNetCore.Identity
+@using StudentProjectManager.Models.auth;
+@using System.ComponentModel.DataAnnotations;
+@inject UserManager<ApplicationUser> UserManager
+
+<h3>Register</h3>
+@if (!string.IsNullOrEmpty(ErrorMessage))
+{
+    <div class="alert alert-danger">
+        @ErrorMessage
+    </div>
+}
+<EditForm Model="UserRegistrationViewModel" OnValidSubmit="HandleRegistration">
+
+    <div class="form-group">
+        <label for="UserName">Username:</label>
+        <InputText id="UserName" class="form-control" @bind-Value="UserRegistrationViewModel.UserName" />
+    </div>
+
+    <div class="form-group">
+        <label for="Email">Email:</label>
+        <InputText id="Email" class="form-control" @bind-Value="UserRegistrationViewModel.Email" />
+    </div>
+
+    <div class="form-group">
+        <label for="Password">Password:</label>
+        <InputText id="Password" class="form-control" @bind-Value="UserRegistrationViewModel.Password" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Register</button>
+</EditForm>
+
+@code {
+    private UserRegistrationModel UserRegistrationViewModel = new UserRegistrationModel();
+    @inject NavigationManager NavigationManager
+    private string ErrorMessage { get; set; }
+
+    private async Task HandleRegistration()
+    {
+        var user = new ApplicationUser
+            {
+                UserName = UserRegistrationViewModel.UserName,
+                NormalizedUserName = UserRegistrationViewModel.UserName.ToUpper(),
+                Email = UserRegistrationViewModel.Email,
+                NormalizedEmail = UserRegistrationViewModel.Email.ToUpper(),
+                Roles = new List<string> { "User" }
+            };
+
+        var result = await UserManager.CreateAsync(user, UserRegistrationViewModel.Password);
+
+        if (result.Succeeded)
+        {
+            // User registration was successful
+            NavigationManager.NavigateTo("/login");
+        }
+        else
+        {
+            // Handle registration failure
+            ErrorMessage = "Registration failed: " + string.Join(", ", result.Errors.Select(e => e.Description));
+        }
+    }
+
+
+    public class UserRegistrationModel
+    {
+        [Required]
+        public string UserName { get; set; }
+
+        [Required]
+        [EmailAddress]
+        public string Email { get; set; }
+
+        [Required]
+        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
+        public string Password { get; set; }
+    }  
+}
+
