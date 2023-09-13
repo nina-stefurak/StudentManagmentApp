@@ -6,13 +6,43 @@
 
 @inject IHttpContextAccessor HttpContextAccessor
 
+
 @if (username != null)
 {
-    <p>Welcome, <b>@username</b>!</p>
+    <div class="px-4 py-5 my-5 text-center">
+        <h1 class="display-5 fw-bold text-body-emphasis">Welcome, <b>@username</b>!</h1>
+        <div class="col-lg-6 mx-auto">
+            <p class="lead mb-4">Create project profiles with detailed descriptions.
+                Quickly form teams by selecting members based on their capabilities and positions.
+                Assign specific roles to team members, including team leader positions, to facilitate smooth project execution.
+                As a Team leaders you can review and accept project candidates.
+            </p>
+            <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+                <a href="create-team" class="btn btn-primary btn-lg px-4 gap-3">Create team</a>
+                <a href="/project" class="btn btn-outline-secondary btn-lg px-4">Create project</a>
+            </div>
+        </div>
+    </div>
 }
 else
 {
-    <p>Welcome, guest!</p>
+    <div class="px-4 py-5 my-5 text-center">
+        <h1 class="display-5 fw-bold text-body-emphasis">Welcome to the Student Project Management Platform</h1>
+        <div class="col-lg-6 mx-auto">
+            <p class="lead mb-4">
+                The platform for smarter project management.
+                Our platform facilitates effortless project creation, team formation, and progress tracking, all within a user-friendly interface.
+                Whether you're an admin overseeing multiple projects or a student eager to showcase your skills, 
+                our platform provides the tools necessary to foster collaboration, innovation, and success. 
+                Step into a world where project management meets simplicity and sophistication. 
+                Join us, and elevate your academic journey to new heights.
+            </p>
+            <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+                <a href="register" class="btn btn-primary btn-lg px-4 gap-3">Register</a>
+                <a href="login" class="btn btn-outline-secondary btn-lg px-4">Login</a>
+            </div>
+        </div>
+    </div>
 }
 
 

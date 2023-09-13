@@ -11,6 +11,7 @@ using StudentProjectManager.Repository;
 using StudentProjectManager.Repository.Auth;
 using System.Collections;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.

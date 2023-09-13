@@ -9,6 +9,13 @@
 
 <h3>Edit Profile</h3>
 
+@if (ShowSuccessAlert)
+{
+    <div class="alert alert-success" role="alert">
+        Your data successfuly saved!
+    </div>
+}
+
 <EditForm Model="UserProfile" OnValidSubmit="HandleValidSubmit">
     <DataAnnotationsValidator />
     <ValidationSummary />
@@ -58,6 +65,8 @@
         }
     }
 
+    private bool ShowSuccessAlert { get; set; } = false;
+
     private async Task HandleValidSubmit()
     {
         var user = await UserManager.GetUserAsync(HttpContextAccessor.HttpContext.User);
@@ -80,11 +89,13 @@
             var result = await UserManager.UpdateAsync(user);
             if (result.Succeeded)
             {
-                NavigationManager.NavigateTo("/profile/edit", forceLoad: true);
+                //NavigationManager.NavigateTo("/profile/edit", forceLoad: true);
+                ShowSuccessAlert = true;
+                StateHasChanged();
             }
             else
             {
-                // Handle error (you might want to add some error handling here)
+                // Handle error
             }
         }
     }
