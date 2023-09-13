@@ -54,6 +54,12 @@ namespace StudentProjectManager.Repository
         {
             await _teams.DeleteOneAsync(t => t.Id == teamId);
         }
+
+        public async Task<List<ApplicationUser>> GetAllUsersAsync()
+        {
+            return _userManager.Users.ToList();
+        }
+
     }
 
 }

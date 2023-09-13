@@ -35,9 +35,10 @@
                 <td>@string.Join(", ", team.GetCapabilities(users.Where(u => team.MemberUserIds.Contains(u.User.Id)).Select(u => u.User).ToList()))</td>
                 <td>@string.Join(", ", team.GetPositions(users.Where(u => team.MemberUserIds.Contains(u.User.Id)).Select(u => u.User).ToList()))</td>
                 <td>
-                    @if (IsAdmin)
+                    @if (IsAdmin || currentUserId == team.TeamLeaderId)
                     {
                         <button class="btn btn-danger" @onclick="(() => DeleteTeam(team.Id))">Delete</button>
+                        <button class="btn btn-primary" @onclick="(() => NavigateToEditPage(team.Id))">Edit</button>
                     }
                 </td>
             </tr>
@@ -172,6 +173,11 @@
         }
     }
 
+    private void NavigateToEditPage(string teamId)
+    {
+        NavigationManager.NavigateTo($"/edit-team/{teamId}");
+    }
+
     private async Task AcceptCandidate(string teamId, string candidateId, Project project)
     {
         // Find the team by ID
@@ -218,6 +224,7 @@
     private List<UserViewModel> users = new List<UserViewModel>();
     private List<string> teamCapabilities = new List<string>();
     private List<string> teamPositions = new List<string>();
+    private string currentUserId;
 
     protected override async Task OnInitializedAsync()
     {
@@ -225,6 +232,7 @@
         teams = await TeamRepository.GetAllTeamsAsync();
         if (currentUser != null)
         {
+            currentUserId = currentUser.Id;
             IsAdmin = currentUser.Roles.Contains("Admin");
             // Get the teams where the current user is the leader
             var leaderTeams = teams.Where(t => t.TeamLeaderId == currentUser.Id).ToList();

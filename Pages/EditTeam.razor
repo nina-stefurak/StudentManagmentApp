@@ -1,0 +1,111 @@
+﻿@page "/edit-team/{TeamId}"
+@using StudentProjectManager.Models
+@using StudentProjectManager.Models.auth;
+@using StudentProjectManager.Repository
+@inject TeamRepository TeamRepository
+@inject NavigationManager NavigationManager
+
+<h3>Edit Team</h3>
+
+<!-- Edit team name -->
+<div class="form-group">
+    <label for="teamName">Team Name:</label>
+    <input id="teamName" class="form-control" @bind="newTeamName" />
+    <button class="btn btn-primary" @onclick="UpdateTeamName">Update Team Name</button>
+</div>
+
+<!-- List of team members with remove button -->
+<h4>Team Members</h4>
+<ul>
+    @foreach (var memberId in team.MemberUserIds)
+    {
+        var member = availableUsers.FirstOrDefault(u => u.Id == memberId);
+        if (member != null)
+        {
+            <li>
+                @member.UserName <button class="btn btn-danger btn-sm" @onclick="(() => RemoveMember(memberId))">Remove</button>
+            </li>
+        }
+    }
+</ul>
+
+<!-- Add new team member -->
+<div class="form-group">
+    <label for="newMember">Add New Member:</label>
+    <select id="newMember" class="form-control" @bind="newMemberId">
+        <option value="">Select a member</option>
+        @foreach (var user in availableUsers)
+        {
+            <option value="@user.Id">@user.UserName</option>
+        }
+    </select>
+    <button class="btn btn-primary" @onclick="AddMember">Add Member</button>
+</div>
+
+<div class="form-group">
+    <label for="teamLeader">Team Leader:</label>
+    <select id="teamLeader" class="form-control" @bind="newTeamLeaderId">
+        @foreach (var memberId in team.MemberUserIds)
+        {
+            var member = availableUsers.FirstOrDefault(u => u.Id == memberId);
+            if (member != null)
+            {
+                <option value="@member.Id">@member.UserName</option>
+            }
+        }
+    </select>
+    <button class="btn btn-primary" @onclick="UpdateTeamLeader">Update Team Leader</button>
+</div>
+
+@code {
+    [Parameter]
+    public string TeamId { get; set; }
+    private string newTeamLeaderId;
+    private Team team = new Team();
+    private List<ApplicationUser> availableUsers = new List<ApplicationUser>();  // List of potential team members, populate this with appropriate data
+    private string newMemberId;
+    private string newTeamName;
+
+    protected override async Task OnInitializedAsync()
+    {
+        team = await TeamRepository.GetTeamById(TeamId);
+        newTeamName = team.Name;
+
+        // Load available users here (including current team members)
+        var allUsers = await TeamRepository.GetAllUsersAsync();  // Assuming you have a method to get all users
+        availableUsers = allUsers.ToList();
+
+        // Setting the newTeamLeaderId to the current team leader's ID
+        newTeamLeaderId = team.TeamLeaderId;
+    }
+
+    private async Task UpdateTeamLeader()
+    {
+        if (!string.IsNullOrEmpty(newTeamLeaderId))
+        {
+            team.TeamLeaderId = newTeamLeaderId;
+            await TeamRepository.UpdateTeam(team);
+        }
+    }
+
+    private async Task UpdateTeamName()
+    {
+        team.Name = newTeamName;
+        await TeamRepository.UpdateTeam(team);
+    }
+
+    private async Task RemoveMember(string memberId)
+    {
+        team.MemberUserIds.Remove(memberId);
+        await TeamRepository.UpdateTeam(team);
+    }
+
+    private async Task AddMember()
+    {
+        if (!string.IsNullOrEmpty(newMemberId))
+        {
+            team.MemberUserIds.Add(newMemberId);
+            await TeamRepository.UpdateTeam(team);
+        }
+    }
+}

@@ -26,5 +26,7 @@ namespace StudentProjectManager.Models
         public int PrestigePoints { get; set; }
         public List<string> CandidateUserIds { get; set; } = new List<string>();
 
+        public bool IsClosed { get; set; } = false;
+
     }
 }

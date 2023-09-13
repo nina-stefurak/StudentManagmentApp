@@ -36,6 +36,16 @@
         <span class="text-muted">Separate capabilities with commas.</span>
     </div>
 
+    <div class="form-group">
+        <label for="seniorityLevel">Seniority Level:</label>
+        <InputSelect id="seniorityLevel" class="form-control" @bind-Value="UserProfile.SeniorityLevel">
+            <option value="Beginner">Beginner</option>
+            <option value="Junior">Junior</option>
+            <option value="Regular">Regular</option>
+            <option value="Senior">Senior</option>
+        </InputSelect>
+    </div>
+
     <button type="submit" class="btn btn-primary">Update Profile</button>
 </EditForm>
 
@@ -47,6 +57,7 @@
         public string Email { get; set; }
         public string Position { get; set; }
         public List<string> Capabilities { get; set; } = new List<string>();
+        public SeniorityLevel SeniorityLevel { get; set; }
     }
 
     private UserProfileModel UserProfile { get; set; } = new UserProfileModel();
@@ -61,6 +72,7 @@
             UserProfile.Email = user.Email;
             UserProfile.Position = user.Position;
             UserProfile.Capabilities = user.Capabilities;
+            UserProfile.SeniorityLevel = user.SeniorityLevel;
             CapabilitiesString = string.Join(", ", user.Capabilities);
         }
     }
@@ -75,6 +87,7 @@
             user.Email = UserProfile.Email;
             user.Position = UserProfile.Position;
             user.Capabilities = UserProfile.Capabilities;
+            user.SeniorityLevel = UserProfile.SeniorityLevel;
 
             // Update capabilities from string
             if (!string.IsNullOrWhiteSpace(CapabilitiesString))

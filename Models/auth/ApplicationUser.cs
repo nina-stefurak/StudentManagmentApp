@@ -26,5 +26,15 @@ namespace StudentProjectManager.Models.auth
         public List<string> Capabilities { get; set; } = new List<string>();
 
         public string Position { get; set; }
+
+        public SeniorityLevel SeniorityLevel { get; set; } = SeniorityLevel.Beginner;
+    }
+
+    public enum SeniorityLevel
+    {
+        Beginner,
+        Junior,
+        Regular,
+        Senior
     }
 }
