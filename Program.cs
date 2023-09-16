@@ -17,6 +17,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
+builder.Services.AddControllers();
 
 // Add MongoDB services
 var mongoDBSettings = builder.Configuration.GetSection("MongoDB");
@@ -83,6 +84,8 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.MapControllerRoute(name: "default", pattern: "api/{controller}/{action=Index}/{id?}");
 
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");

@@ -14,17 +14,19 @@ namespace StudentProjectManager.Repository
             _projects = database.GetCollection<Project>("Projects");
         }
 
-        public async Task<List<Project>> GetAllProjectsAsync()
+        public ProjectRepository() { }
+
+        public virtual async Task<List<Project>> GetAllProjectsAsync()
         {
             return await _projects.Find(proj => true).ToListAsync();
         }
 
-        public async Task<Project> GetProjectByIdAsync(string id)
+        public virtual async Task<Project> GetProjectByIdAsync(string id)
         {
             return await _projects.Find<Project>(proj => proj.Id == id).FirstOrDefaultAsync();
         }
 
-        public async Task CreateProjectAsync(Project project)
+        public virtual async Task CreateProjectAsync(Project project)
         {
             await _projects.InsertOneAsync(project);
         }
